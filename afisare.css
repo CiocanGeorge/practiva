@@ -5,10 +5,12 @@
 	 list-style:none;
 	 box-sizing:border-box;
  }
+ 
  body{
 	 font-family:Arial;
 	 
  }
+ 
  nav{
 	 background:#0082e6;
 	 height:80px;
@@ -38,6 +40,15 @@
 	 border:1px solid;
 	 text-transparent:uppercase;
  }
- table tr th{
-	 border: 2px solid;
+
+ table {
+     width: 100%; 
  }
+ th{
+     border: 2px solid;
+ }
+ 
+ td{
+     border: 1px solid;
+ }
+ 

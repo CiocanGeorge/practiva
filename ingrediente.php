@@ -2,7 +2,7 @@
 	$servername = "localhost";
 	$username = "root";
 	$password = "";
-	$dbname = "ingrediente";
+	$dbname = "combinatii";
 	
 	$denum=$_POST["denumire"];
 	$desc=$_POST["descriere"];
