@@ -1,23 +1,17 @@
  <?php
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$dbname = "combinatii";
-	
-	$denum=$_POST["denumire"];
-	$desc=$_POST["descriere"];
-	echo $denumireee;
-	
-	//conectare BD
-	
-	$con=new mysqli($servername,$username,$password,$dbname);
-	//verificare conectiune
-	if($con->connect_error)
-		die("Connection failed: ". $con->connect_error);
+	 require './init.php';
+         $con = init::init_DB();
+         
+	$denum=filter_input(INPUT_POST, 'denumire',FILTER_SANITIZE_STRING);
+	$desc=filter_input(INPUT_POST, 'descriere',FILTER_SANITIZE_STRING);
 	
 	$sql="INSERT INTO ingredient (Denumire,Descriere) VALUES ('$denum','$desc')";
+       $ins = $con->prepare($sql);
+
 	
-	if($con->query($sql)===TRUE)
+	
+	
+	if($ins->execute())
 	{
 		header("Location: home.php");
 		exit();
@@ -28,6 +22,5 @@
 	}
 	
 	$con->close();
-	
  
  ?>

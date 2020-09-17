@@ -4,8 +4,11 @@
         <link rel="stylesheet" href="alege.css">
     </head>
         <?php
+        include './init.php';
+        if(init::init_DB()){
         include 'header.php';
         ?>
+    <body>
     </br></br>
                 
 		<div>
@@ -18,5 +21,8 @@
 		</form>
 		</div>
 	</body>
+        <?php
+       }
+       ?>
 </html>
 		

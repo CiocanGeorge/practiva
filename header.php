@@ -18,7 +18,7 @@
 	</head>
 	<body>
 		<nav>
-			<label class="logo">Preparatele lu'Isus</label>
+                    <label class="logo"><a href="home.php">Preparatele lu'Isus</a></label>
 			<ul>
 				<li><a href="home.php" class="active" >Ingrediente</a></li>
 				<li><a href="preparate.php" class="active">Preparate</a></li>

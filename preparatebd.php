@@ -1,24 +1,19 @@
   <?php
-	$servername = "localhost";
-	$username = "root";
-	$password = "";
-	$dbname = "combinatii";
-	
-	$denum=$_POST["denumire"];
-	$desc=$_POST["descriere"];
-	$gram=$_POST["gramaj"];
+	require './init.php';
+         
+	$denum=filter_input(INPUT_POST, 'denumire',FILTER_SANITIZE_STRING);
+	$desc=filter_input(INPUT_POST, 'descriere',FILTER_SANITIZE_STRING);
+	$gram=filter_input(INPUT_POST, 'gramaj',FILTER_SANITIZE_STRING);
 	
 	
-	//conectare BD
 	
-	$con=new mysqli($servername,$username,$password,$dbname);
-	//verificare conectiune
-	if($con->connect_error)
-		die("Connection failed: ". $con->connect_error);
+	$con = init::getCon();
 	
+
 	$sql="INSERT INTO preparat (Denumire,Gramaj,Descriere) VALUES ('$denum','$gram','$desc')";
-	
-	if($con->query($sql)===TRUE)
+        
+	 $ins = $con->prepare($sql);
+	if($ins->execute())
 	{
 		echo "succes"; 
 		header("Location: preparate.php");

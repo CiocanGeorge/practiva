@@ -4,7 +4,10 @@
 
 
 	
-	<?php include 'header.php';?>
+	<?php 
+        session_start();
+        require './init.php';
+        include 'header.php';?>
         <style>
 <?php include 'afisare.css'; ?>
 </style>
@@ -14,89 +17,71 @@
 		<table class="table" id="table">
 			
 			<?php
-			$con = mysqli_connect("localhost", "root", "", "combinatii");
-			// Check connection
-			if ($con->connect_error) {
-				die("Connection failed: " . $con->connect_error);
-			}
+			$con = init::getCon();
+
 			$querycol="SELECT DISTINCT `Denumire` FROM `preparat`";
 			$querylinie="SELECT DISTINCT `Denumire` FROM `ingredient`";
-			#$querygram="SELECT DISTINCT `gramaj` FROM `prepingr`";
+			
                         $queryColNames =  "SELECT `COLUMN_NAME` 
                                             FROM `INFORMATION_SCHEMA`.`COLUMNS` 
                                             WHERE `TABLE_SCHEMA`='combinatii' 
-                                            AND `TABLE_NAME`='prepingr'";
+                                            AND `TABLE_NAME`='prepingr' limit 1";
                         $queryIngr = "Select Distinct denumire from ingredient";
                         
-			$resultcol=mysqli_query($con,$querycol);
-			$resultlinie=mysqli_query($con,$querylinie);
-			#$resultgram=mysqli_query($con,$querygram);
-                        $resultColsNames = mysqli_query($con,$queryColNames);
-                        $resultIngr = mysqli_query($con,$queryIngr);
-
-                        $rowColNames = mysqli_fetch_array($resultColsNames);
+                  
                         
-                                
-			echo "<tr><th>".$rowColNames[0]."</th>";
+			$resultcol=$con->query($querycol); /*mysqli_query($con,$querycol);*/
+			$resultlinie=$con->query($querylinie);
+		
+                        $resultColsNames = $con->query($queryColNames);
+                        $resultIngr = $con->query($queryIngr);
+
+  
+                        echo "<tr>";
+                        while ($row = $resultColsNames->fetch(PDO::FETCH_ASSOC))  {
+
+                          echo "<th>".$row['COLUMN_NAME']."</th>";  
+                        }
                         
                         $contorIngr = 0;
+                        $lungime = 0;
+                        $lista;
                         
-                        
-                        while ($rowIngrediente = mysqli_fetch_assoc($resultIngr)) {
-                             foreach ($rowIngrediente as $key => $value) {
-                               echo("<th>".$value."</th>");
-                               $contorIngr++;
-                        }
+                        while ($row = $resultlinie->fetch(PDO::FETCH_ASSOC))  {   
+                                $lista[$contorIngr] = $row['Denumire'];
+                               echo("<th>".$row['Denumire']."</th>");
+                             $contorIngr=$contorIngr+1;
+                     
                     }
 
-                     echo  "</tr>";
-			$lista=array();
-			while($row1=mysqli_fetch_array($resultlinie))
-			{
-				
-				
-				foreach($row1 as $data)
-				{
-					$lista[]=$data;
-					//echo "<td align='center'>". $data . "</td>";
-					break;
-				}
-				
-			}
-			//echo "</tr>";
-			
-			
-			
-			while($row2=mysqli_fetch_array($resultcol))
-			{
-				echo "<tr>";
-				foreach($row2 as $data)
-				{
-					 echo "<td align='center'>". $data ."</td>";#. "</th></tr>";
-					for($i=0;$i<count($lista);$i=$i+1)
-					{
-					$query1="SELECT DISTINCT `gramaj` FROM `prepingr` WHERE preparat='".$data."' AND ingredient='".$lista[$i]."'";
-					
-                                            $res=mysqli_query($con,$query1);
-				
-					
-	
-					
-					 if(($row3=mysqli_fetch_array($res))!=0)
-					{
-						echo "<td align='center' class='tdborder'>".$row3['gramaj']."</td>";
-					}
-                                       
-					else
-						 echo "<td></td>";
-					}
-					 
-					 break;
-				}
-				echo "</tr>";
-			}
-			
-		
+                     echo  "</tr><tr>";
+                      while ($row1 = $resultcol->fetch(PDO::FETCH_ASSOC))  {
+                             echo "<td>".$row1['Denumire']."</td>";
+                            init::wh_log($row1['Denumire']);
+
+                            for($i=0;$i<count($lista);$i=$i+1){
+                                    $querygGramaj = "SELECT DISTINCT `gramaj` FROM `prepingr` WHERE preparat='".$row1['Denumire']."' AND ingredient='".$lista[$i]."'";
+                                 //   init::wh_log($querygGramaj);
+                                     $resultQuery = $con->query($querygGramaj);
+                                    
+                                   
+                                    $row4 = $resultQuery->fetch(PDO::FETCH_ASSOC);
+
+                                  // $total_rating_votes = $row4['gramaj'];
+                                     
+                                 if(!isset($row4['gramaj'])){
+                                   echo "<td></td>";
+                                    }else{
+                                          echo "<td>". $row4['gramaj']."</td>";
+                                    }  
+                                      
+                             } 
+                                                     
+                             echo "</tr>";
+
+                             }
+               
+                 
 			?>
 			</table>
 		
