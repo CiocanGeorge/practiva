@@ -21,9 +21,8 @@ class init {
     }
    
    public static function init_DB() {
-   
-       if(filter_input(INPUT_POST, 'username',FILTER_SANITIZE_STRING)!=null && filter_input(INPUT_POST, 'servername',FILTER_SANITIZE_STRING)!=null && 
-               filter_input(INPUT_POST, 'port',FILTER_SANITIZE_NUMBER_INT)!=null &&!file_exists(self::$config_file)){
+
+       if(!file_exists(self::$config_file) && filter_input(INPUT_POST, 'config')==null){
            init::wh_log("start!!!");
        ?>
 <html>
@@ -34,7 +33,7 @@ class init {
                 <meta name="author" content="Isus">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">      
 	</head>
-        <body>
+        <body id ="body">
             <h1 align="center">DB Init</h1><br><hr><br><br>
             
             <form method="POST" action="#" align="center" name="config">
@@ -42,7 +41,7 @@ class init {
                 <p align = "center" >Password</p><input type="password" id="password" name="password"><br>
                 <p align = "center" >Server name</p><input type="text" id="servername" name="servername"><br>
                 <p align = "center" >Port</p><input type="number" id="port" name="port"><br>
-                <p align="center"><input type="submit" value="Configureaza"></p>
+                <p align="center"><input type="submit" name="config" value="Configureaza"></p>
                 
             </form>
             
@@ -55,7 +54,12 @@ class init {
        
   
        }
-       else if ( !file_exists(self::$config_file) ){
+       /*
+        * 
+        * 
+        */
+      if (filter_input(INPUT_POST, 'username',FILTER_SANITIZE_STRING)!=null && filter_input(INPUT_POST, 'servername',FILTER_SANITIZE_STRING)!=null && 
+               filter_input(INPUT_POST, 'port',FILTER_SANITIZE_NUMBER_INT)!=null &&!file_exists(self::$config_file) ){
          
            
            if (!isset($_SESSION['key'])) {
@@ -90,10 +94,9 @@ class init {
                 self::$pieces = explode(",", $read);
                 self::$pieces[1] =$str;
                 
-                
            }
           init::wh_log("Writing to file Done!");
-       }else{
+       }else if(file_exists(self::$config_file)){
             $myfile1 = fopen(self::$config_file, "r");
                 init::wh_log("File opened: ".$myfile1);
             if (flock($myfile1, LOCK_EX)) {
